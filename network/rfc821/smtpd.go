@@ -26,7 +26,6 @@ func session(conn net.Conn) {
 
 	conn.Write([]byte("220 takoyaki SMTP Service Ready\r\n"))
 
-	// need EHLO or HELO
 	stage := 0
 	messageBuf := make([]byte, 512)
 
@@ -64,6 +63,10 @@ func session(conn net.Conn) {
 			conn.Write([]byte("250 OK\r\n"))
 		} else if command == "VRFY" && stage == 1 {
 			conn.Write([]byte("550 Access Denied to You.\r\n"))
+		} else if command == "EXPN" && stage == 1 {
+			conn.Write([]byte("550 Access Denied to You.\r\n"))
+		} else if command == "TURN" && stage == 1 {
+			conn.Write([]byte("502\r\n"))
 		} else if command == "HELP" {
 			conn.Write([]byte("214-Command supported\r\n"))
 			conn.Write([]byte("214 HELO MAIL RCPT DATA NOOP QUIT REST HELP\r\n"))
